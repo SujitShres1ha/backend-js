@@ -9,14 +9,14 @@ const jwtVerify = asyncHandler(async (req,res,next) => {
         if (!token){
             throw new apiError(401,"Request not authorized")
         }
-    
+        
         const validToken = await jwt.verify(token,process.env.ACCESS_TOKEN)
-    
+        
         if (!validToken){
-            throw new apiError(401,"Invalid access token")
+            throw new apiError(400,"Invalid access token")
         }
     
-        const User = user.findById(validToken._id).select("-password -refreshToken")
+        const User = await user.findById(validToken._id).select("-password -refreshToken")
     
         req.user = User
         next()
